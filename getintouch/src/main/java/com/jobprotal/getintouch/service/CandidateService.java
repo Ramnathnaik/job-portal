@@ -10,8 +10,6 @@ import com.jobprotal.getintouch.entity.Candidate;
 @Service
 public interface CandidateService {
 	
-	Candidate createCandidate(Candidate candidate);
-	
 	Candidate getCandidate(Long id);
 	
 	Candidate updateCandidate(Candidate candidate);

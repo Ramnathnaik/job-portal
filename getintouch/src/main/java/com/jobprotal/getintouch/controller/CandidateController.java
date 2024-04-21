@@ -49,25 +49,6 @@ public class CandidateController {
 		return ResponseEntity.ok(jobPortalResponse);
 	}
 
-	@PostMapping
-	public ResponseEntity<JobPortalResponse<?>> createCandidate(@Valid @RequestBody Candidate candidate,
-			BindingResult bindingResult) {
-		LOGGER.info("createCandidate: {}", STARTED);
-		if (bindingResult.hasErrors()) {
-			Map<String, String> validationErrors = new HashMap<>();
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				validationErrors.put(error.getField(), error.getDefaultMessage());
-			}
-			return ResponseEntity.badRequest().body(JobPortalResponse.failure(validationErrors, "validation errors"));
-		}
-		
-		Candidate newCandidate = this.candidateService.createCandidate(candidate);
-		JobPortalResponse<Candidate> jobPortalResponse = JobPortalResponse.success(newCandidate,
-				"candidate created successfully");
-		LOGGER.info("createCandidate: {}", COMPLETED);
-		return new ResponseEntity(jobPortalResponse, HttpStatus.CREATED);
-	}
-
 	@GetMapping
 	public ResponseEntity<JobPortalResponse<?>> getAllCandidates() {
 		LOGGER.info("getAllCandidates: {}", STARTED);
