@@ -10,6 +10,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.jobprotal.getintouch.exception.candidate.CandidateAlreadyPresentException;
+import com.jobprotal.getintouch.exception.candidate.CandidateNotFoundException;
+import com.jobprotal.getintouch.exception.company.CandidateCannotRegisterCompanyException;
+import com.jobprotal.getintouch.exception.company.CompanyAlreadyRegisteredException;
+import com.jobprotal.getintouch.exception.company.CompanyNotFoundException;
+import com.jobprotal.getintouch.exception.job.JobNotFoundException;
 import com.jobprotal.getintouch.response.JobPortalResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -28,6 +34,30 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<JobPortalResponse<String>> handleCandidateAlreadyPresentException(CandidateAlreadyPresentException ex) {
 		JobPortalResponse<String> jobPortalResponse = JobPortalResponse.failure(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(jobPortalResponse);
+	}
+	
+	@ExceptionHandler({CompanyAlreadyRegisteredException.class})
+	public ResponseEntity<JobPortalResponse<String>> handleCompanyAlreadyRegisteredException(CompanyAlreadyRegisteredException ex) {
+		JobPortalResponse<String> jobPortalResponse = JobPortalResponse.failure(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(jobPortalResponse);
+	}
+	
+	@ExceptionHandler({CandidateCannotRegisterCompanyException.class})
+	public ResponseEntity<JobPortalResponse<String>> handleCompanyAlreadyRegisteredException(CandidateCannotRegisterCompanyException ex) {
+		JobPortalResponse<String> jobPortalResponse = JobPortalResponse.failure(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jobPortalResponse);
+	}
+	
+	@ExceptionHandler({CompanyNotFoundException.class})
+	public ResponseEntity<JobPortalResponse<String>> handleCompanyNotFoundException(CompanyNotFoundException ex) {
+		JobPortalResponse<String> jobPortalResponse = JobPortalResponse.failure(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(jobPortalResponse);
+	}
+	
+	@ExceptionHandler({JobNotFoundException.class})
+	public ResponseEntity<JobPortalResponse<String>> handleJobNotFoundException(JobNotFoundException ex) {
+		JobPortalResponse<String> jobPortalResponse = JobPortalResponse.failure(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(jobPortalResponse);
 	}
 	
 	@ExceptionHandler(Exception.class)

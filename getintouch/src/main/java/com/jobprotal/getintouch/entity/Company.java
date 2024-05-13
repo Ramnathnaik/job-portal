@@ -1,9 +1,16 @@
 package com.jobprotal.getintouch.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -11,8 +18,7 @@ import jakarta.validation.constraints.NotEmpty;
 public class Company {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String companyId;
 	
 	@NotEmpty(message = "Please provide company name")
 	private String name;
@@ -23,13 +29,20 @@ public class Company {
 	
 	@Email(message = "Please provide a valid email address")
 	private String email;
-
-	public Long getId() {
-		return id;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<Job> jobs = new ArrayList<Job>();
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	private Candidate candidate;
+	
+	public String getCompanyId() {
+		return companyId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 
 	public String getName() {
@@ -64,10 +77,26 @@ public class Company {
 		this.email = email;
 	}
 
+	public List<Job> getJobs() {
+		return jobs;
+	}
+
+	public void setJobs(List<Job> jobs) {
+		this.jobs = jobs;
+	}
+
+	public Candidate getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
+	}
+
 	@Override
 	public String toString() {
-		return "Company [id=" + id + ", name=" + name + ", about=" + about + ", domain=" + domain + ", email=" + email
-				+ "]";
+		return "Company [companyId=" + companyId + ", name=" + name + ", about=" + about + ", domain=" + domain
+				+ ", email=" + email + ", jobs=" + jobs + "]";
 	}
 
 }

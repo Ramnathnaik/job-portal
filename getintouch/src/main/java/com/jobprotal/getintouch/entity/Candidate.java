@@ -4,13 +4,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.jobprotal.getintouch.helper.AppEnums.EmploymentType;
+import com.jobprotal.getintouch.helper.AppEnums.ProviderType;
+import com.jobprotal.getintouch.helper.AppEnums.RoleType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,10 +23,9 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 public class Candidate implements UserDetails {
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String candidateId;
 	
 	@NotEmpty(message = "Please provide your name")
 	private String name;
@@ -58,16 +60,24 @@ public class Candidate implements UserDetails {
 	private double preferredSalary;
 	
 	@Enumerated(EnumType.STRING)
+	private RoleType role;
+	
+	@Enumerated(EnumType.STRING)
 	private EmploymentType employmentType;
 	
 	private String noticePeriod;
+	
+	@Enumerated(EnumType.STRING)
+	private ProviderType provider;
+	
+	private String providerId;
 
-	public Long getId() {
-		return id;
+	public String getCandidateId() {
+		return candidateId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public String getName() {
@@ -190,24 +200,35 @@ public class Candidate implements UserDetails {
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
 	}
-
-	@Override
-	public String toString() {
-		return "Candidate [id=" + id + ", name=" + name + ", username=" + username + ", bio=" + bio + ", email=" + email
-				+ ", phone=" + phone + ", experience=" + experience + ", education=" + education + ", location="
-				+ location + ", currentCompany=" + currentCompany + ", currentPosition=" + currentPosition
-				+ ", currentSalary=" + currentSalary + ", preferredSalary=" + preferredSalary + ", employmentType="
-				+ employmentType + ", noticePeriod=" + noticePeriod + "]";
-	}
 	
-	private static enum EmploymentType {
-		FULLTIME,
-		PARTTIME
+	public ProviderType getProvider() {
+		return provider;
+	}
+
+	public void setProvider(ProviderType provider) {
+		this.provider = provider;
+	}
+
+	public String getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+
+	public RoleType getRole() {
+		return role;
+	}
+
+	public void setRole(RoleType role) {
+		this.role = role;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of();
+		List<SimpleGrantedAuthority> roles = List.of(new SimpleGrantedAuthority(role.toString()));
+		return roles;
 	}
 
 	@Override
@@ -228,6 +249,16 @@ public class Candidate implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Candidate [candidateId=" + candidateId + ", name=" + name + ", username=" + username + ", password="
+				+ password + ", bio=" + bio + ", email=" + email + ", phone=" + phone + ", experience=" + experience
+				+ ", education=" + education + ", location=" + location + ", currentCompany=" + currentCompany
+				+ ", currentPosition=" + currentPosition + ", currentSalary=" + currentSalary + ", preferredSalary="
+				+ preferredSalary + ", role=" + role + ", employmentType=" + employmentType + ", noticePeriod="
+				+ noticePeriod + ", provider=" + provider + ", providerId=" + providerId + "]";
 	}
 
 }

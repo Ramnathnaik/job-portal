@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,5 +71,17 @@ public class AuthController {
     	
     	return ResponseEntity.ok(loginResponse);
     }
+    
+    @GetMapping("/{username}")
+	public ResponseEntity<JobPortalResponse<?>> isUsernamePresent(@PathVariable String username) {
+		LOGGER.info("isUsernamePresent: {}", STARTED);
+		if (username.length() <= 3)
+			return ResponseEntity.badRequest().body(JobPortalResponse.failure("Username must be greater than 3 characters"));
+		
+		boolean isUsernamePresent = this.authenticationService.isUsernamePresent(username);
+		JobPortalResponse jobPortalResponse = JobPortalResponse.success(isUsernamePresent);
+		LOGGER.info("isUsernamePresent: {}", COMPLETED);
+		return ResponseEntity.ok(jobPortalResponse);
+	}
     
 }

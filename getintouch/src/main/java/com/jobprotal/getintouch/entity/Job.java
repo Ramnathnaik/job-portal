@@ -1,24 +1,27 @@
 package com.jobprotal.getintouch.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Job {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String jobId;
 	
 	@NotEmpty(message = "please provide a job title")
 	private String title;
 	
 	private String description;
 	
-	@NotEmpty(message = "please provide the salary")
+	@NotNull(message = "please provide the salary")
 	private double salary;
 	
 	@NotEmpty(message = "please provide techstack")
@@ -31,14 +34,24 @@ public class Job {
 	
 	private String domain;
 	
-	private Long companyId;
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Company company;
 
-	public Long getId() {
-		return id;
+	public String getJobId() {
+		return jobId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	public String getTitle() {
@@ -95,21 +108,6 @@ public class Job {
 
 	public void setDomain(String domain) {
 		this.domain = domain;
-	}
-
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
-	}
-
-	@Override
-	public String toString() {
-		return "Job [id=" + id + ", title=" + title + ", description=" + description + ", salary=" + salary
-				+ ", techstack=" + techstack + ", location=" + location + ", experience=" + experience + ", domain="
-				+ domain + ", companyId=" + companyId + "]";
 	}
 
 }

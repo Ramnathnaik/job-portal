@@ -8,4 +8,6 @@ public interface AuthenticationService {
 	Candidate signup(Candidate candidate);
 	
 	Candidate authenticate(LoginRequest login);
+	
+	boolean isUsernamePresent(String username);
 }

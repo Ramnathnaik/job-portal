@@ -1,4 +1,4 @@
-package com.jobprotal.getintouch.exception;
+package com.jobprotal.getintouch.exception.candidate;
 
 public class CandidateAlreadyPresentException extends RuntimeException {
 

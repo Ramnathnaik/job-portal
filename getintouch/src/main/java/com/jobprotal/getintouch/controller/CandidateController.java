@@ -40,11 +40,11 @@ public class CandidateController {
 	private CandidateService candidateService;
 
 	@GetMapping("/{candidateId}")
-	public ResponseEntity<JobPortalResponse<?>> getCandidate(@PathVariable Long candidateId) {
+	public ResponseEntity<JobPortalResponse<?>> getCandidate(@PathVariable String candidateId) {
 		LOGGER.info("getCandidate: {}", STARTED);
 		Candidate candidate = this.candidateService.getCandidate(candidateId);
 		JobPortalResponse<Candidate> jobPortalResponse = JobPortalResponse.success(candidate,
-				"data for candidate with ID: " + candidate.getId());
+				"data for candidate with ID: " + candidate.getCandidateId());
 		LOGGER.info("getCandidate: {}", COMPLETED);
 		return ResponseEntity.ok(jobPortalResponse);
 	}
@@ -60,8 +60,16 @@ public class CandidateController {
 	}
 
 	@PutMapping
-	public ResponseEntity<JobPortalResponse<?>> updateCandidate(@RequestBody Candidate candidate) {
+	public ResponseEntity<JobPortalResponse<?>> updateCandidate(@Valid @RequestBody Candidate candidate, BindingResult bindingResult) {
 		LOGGER.info("updateCandidate: {}", STARTED);
+		if (bindingResult.hasErrors()) {
+			Map<String, String> validationErrors = new HashMap<>();
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				validationErrors.put(error.getField(), error.getDefaultMessage());
+			}
+			return ResponseEntity.badRequest().body(JobPortalResponse.failure(validationErrors, "validation errors"));
+		}
+		
 		Candidate updateCandidate = this.candidateService.updateCandidate(candidate);
 		JobPortalResponse<Candidate> jobPortalResponse = JobPortalResponse.success(updateCandidate,
 				"candidate updated successfully");
@@ -70,7 +78,7 @@ public class CandidateController {
 	}
 
 	@DeleteMapping("/{candidateId}")
-	public ResponseEntity<JobPortalResponse<?>> deleteCandidate(@PathVariable Long candidateId) {
+	public ResponseEntity<JobPortalResponse<?>> deleteCandidate(@PathVariable String candidateId) {
 		LOGGER.info("deleteCandidate: {}", STARTED);
 		this.candidateService.deleteCandidate(candidateId);
 		JobPortalResponse jobPortalResponse = JobPortalResponse

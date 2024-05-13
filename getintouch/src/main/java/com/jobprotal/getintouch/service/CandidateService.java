@@ -10,11 +10,11 @@ import com.jobprotal.getintouch.entity.Candidate;
 @Service
 public interface CandidateService {
 	
-	Candidate getCandidate(Long id);
+	Candidate getCandidate(String id);
 	
 	Candidate updateCandidate(Candidate candidate);
 	
-	void deleteCandidate(Long id);
+	void deleteCandidate(String id);
 	
 	List<Candidate> getAllCandidates();
 
